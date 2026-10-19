@@ -32,10 +32,15 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     _configure_logging()
 
-    settings = load_settings(args.config)
-    if not settings.telegram_enabled:
-        print("Telegram is not configured: set TELEGRAM_BOT_TOKEN and TELEGRAM_ALLOWED_USER_IDS in .env", file=sys.stderr)
+    try:
+        settings = load_settings(args.config)
+    except Exception as exc:  # noqa: BLE001
+        print(f"telegram settings failed: {exc}", file=sys.stderr)
         return 2
+    if not settings.telegram_enabled:
+        print("Telegram is not configured: set TELEGRAM_BOT_TOKEN and TELEGRAM_ALLOWED_USER_IDS", file=sys.stderr)
+        return 2
+    log.info("telegram process starting allowlist=%s", ",".join(str(i) for i in sorted(settings.telegram_user_ids)))
     if settings.telegram_mode != "process":
         print("ATS_TELEGRAM_MODE is 'inprocess': the API process owns polling; refusing to start a second poller", file=sys.stderr)
         return 2
