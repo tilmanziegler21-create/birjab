@@ -50,19 +50,12 @@ def cmd_serve(args: argparse.Namespace) -> int:
 
     import uvicorn
 
-    from app.ops.lock import InstanceLock, instance_lock_path
-
     os.environ.setdefault("ATS_RUN_LOOP", "true")
     if args.config:
         os.environ["ATS_CONFIG_PATH"] = args.config
-    settings = _settings(args.config)
-    lock = InstanceLock(Path(args.lock) if args.lock else instance_lock_path(settings.database_url))
-    if not lock.acquire():
-        raise SystemExit(f"another paper process holds {lock.path}; refusing a second engine")
-    try:
-        uvicorn.run("app.main:app", host=args.host, port=args.port, reload=False)
-    finally:
-        lock.unlock()
+    # InstanceLock is taken once in create_app. A second flock in this process
+    # fails on Linux (Render) even though Darwin allowed it.
+    uvicorn.run("app.main:app", host=args.host, port=args.port, reload=False)
     return 0
 
 
