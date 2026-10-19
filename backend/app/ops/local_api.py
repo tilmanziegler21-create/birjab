@@ -10,8 +10,17 @@ import ipaddress
 from urllib.parse import urlparse
 
 
+def normalize_http_api_url(url: str) -> str:
+    """Render hostport is `service:10000` with no scheme. Telegram settings need http://."""
+
+    cleaned = (url or "").strip()
+    if cleaned and "://" not in cleaned:
+        return f"http://{cleaned}"
+    return cleaned
+
+
 def is_private_http_api_url(url: str) -> bool:
-    parsed = urlparse(url)
+    parsed = urlparse(normalize_http_api_url(url))
     if parsed.scheme != "http":
         return False
     host = (parsed.hostname or "").lower()

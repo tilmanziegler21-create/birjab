@@ -640,7 +640,8 @@ def test_api_process_does_not_poll_telegram_unless_told_to(tmp_path: Path) -> No
     with TestClient(app) as client:
         health = client.get("/health").json()
         assert health["telegram"] is False and health["live_trading"] is False
-    # Token + allowlist set, default mode "process": the API still does not start a poller.
+    # Token + allowlist set, default mode "process": the API still does not start a poller
+    # unless this process is the Render paper role.
     configured = Settings(exchange="simulated", telegram_bot_token="42:tok", telegram_allowed_user_ids="1")  # type: ignore[arg-type]
     assert configured.telegram_enabled is True and configured.telegram_inprocess is False
     app = create_app(configured)

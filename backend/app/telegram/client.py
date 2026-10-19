@@ -13,7 +13,7 @@ import urllib.request
 from collections.abc import Callable
 from typing import Any, Protocol
 
-from app.ops.local_api import is_private_http_api_url
+from app.ops.local_api import is_private_http_api_url, normalize_http_api_url
 
 
 class StateUnavailable(RuntimeError):
@@ -46,6 +46,7 @@ def _urllib_transport(method: str, url: str, body: bytes | None) -> bytes:
 
 class RemoteClient:
     def __init__(self, base_url: str, *, transport: Transport | None = None) -> None:
+        base_url = normalize_http_api_url(base_url)
         if not is_private_http_api_url(base_url):
             raise ValueError("telegram talks to the paper API on loopback or a private host only")
         self.base_url = base_url.rstrip("/")

@@ -66,7 +66,13 @@ def create_app(
         if runtime is not None and settings.run_loop:
             app.state.loop_running = True
             task = asyncio.create_task(_loop(app, runtime, settings.market_poll_interval_sec))
-        if runtime is not None and settings.telegram_inprocess:
+        # On Render the paper service owns polling when the token is present, so /start
+        # works even if the separate worker is down. Do not also run `python -m app.telegram`
+        # with the same token.
+        start_telegram = settings.telegram_enabled and (
+            settings.telegram_inprocess or os.environ.get("ATS_ROLE", "").lower() == "paper"
+        )
+        if runtime is not None and start_telegram:
             from app.telegram.bot import TelegramApp
 
             telegram_task = asyncio.create_task(_telegram(TelegramApp(runtime, settings)), name="ats-telegram")

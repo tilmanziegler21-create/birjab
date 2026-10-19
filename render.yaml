@@ -50,6 +50,12 @@ services:
         value: "1"
       - key: ATS_TELEGRAM_MODE
         value: process
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_ALLOWED_USER_IDS
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
       - key: PYTHONUNBUFFERED
         value: "1"
 

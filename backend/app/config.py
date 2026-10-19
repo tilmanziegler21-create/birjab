@@ -12,7 +12,7 @@ from pydantic import AliasChoices, Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.money import QuoteCurrency, money
-from app.ops.local_api import is_private_http_api_url
+from app.ops.local_api import is_private_http_api_url, normalize_http_api_url
 
 
 class Settings(BaseSettings):
@@ -138,6 +138,7 @@ class Settings(BaseSettings):
         if self.telegram_digest_interval_sec < 60 or self.telegram_max_messages_per_minute < 1:
             raise ValueError("telegram digest interval must be >= 60 s and the per-minute cap positive")
         self.telegram_user_ids  # validates the allowlist format
+        object.__setattr__(self, "telegram_api_base_url", normalize_http_api_url(self.telegram_api_base_url))
         if not is_private_http_api_url(self.telegram_api_base_url):
             raise ValueError("telegram_api_base_url must point at loopback or a private host")
         if self.telegram_drawdown_alert_pct <= 0:

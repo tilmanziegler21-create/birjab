@@ -12,10 +12,13 @@ def test_private_http_api_url_allows_loopback_and_render_hosts() -> None:
     assert is_private_http_api_url("http://localhost:8000")
     assert is_private_http_api_url("http://[::1]:8000")
     assert is_private_http_api_url("http://ats-paper:10000")
+    assert is_private_http_api_url("ats-paper:10000")
     assert is_private_http_api_url("http://ats-paper-ab1c:10000")
     assert is_private_http_api_url("http://ats-paper.frankfurt.render.internal:10000")
     assert is_private_http_api_url("http://10.0.0.5:8000")
     assert is_private_http_api_url("http://192.168.1.9:8000")
+    Settings(telegram_api_base_url="ats-paper:10000")  # type: ignore[arg-type]
+    RemoteClient("ats-paper:10000")
 
 
 def test_private_http_api_url_refuses_public_hosts() -> None:
