@@ -1,0 +1,46 @@
+# Paper research config. Not a return forecast.
+# Quote currency is configuration: USDC, USDT, or EUR. Confirm the pair exists
+# on the account's regulated venue before any later pilot. This file does not
+# select a live exchange.
+
+mode: paper
+exchange: simulated
+report_currency: USDC
+quote_currency: USDC
+watchlist: [BTC, ETH, SOL, XRP, BNB, LINK, ADA, AVAX]
+max_active_pairs: 3
+starting_virtual_balance: "5000"
+per_order_quote: "50"
+grid_step_pct: "0.30"
+net_target_pct: "0.10"
+max_portfolio_exposure_pct: "40"
+max_per_asset_exposure_pct: "15"
+max_open_lots_per_asset: 6
+min_order_book_depth_multiplier: "10"
+allow_leverage: false
+allow_margin: false
+allow_live_trading: false
+allow_withdraw: false
+news_poll_interval_sec: 60
+news_stale_after_sec: 600
+pause_new_buys_if_unverified_high_impact: true
+assumed_maker_fee_pct: "0.10"
+assumed_taker_fee_pct: "0.10"
+assumed_slippage_pct: "0.05"
+
+# Safety gates. They are not in the numbered parameter table of the spec.
+# They exist so feed loss, spread shocks, depeg, and drawdown have a
+# deterministic limit. Change them explicitly; do not treat them as edge.
+market_stale_after_sec: 15
+max_spread_pct: "0.50"
+depeg_max_deviation_pct: "1.00"
+max_drawdown_pct: "10"
+# Share of realized profit moved out of free cash after a profitable sell.
+# 0 keeps the current buy budget unchanged.
+profit_reserve_pct: "0"
+
+# Runtime. `simulated` is a labelled synthetic walk from 100, not market data.
+# `binance_public` reads public books with GET only; no key, no order path.
+market_poll_interval_sec: 5
+synthetic_seed: 7
+news_fixtures_path: ""

@@ -1,0 +1,38 @@
+[project]
+name = "ai-trading-system"
+version = "0.1.0"
+description = "Paper-only multi-asset spot research system. Live order sending is disabled."
+requires-python = ">=3.12"
+dependencies = [
+    "aiogram>=3.13,<4",
+    "alembic>=1.14",
+    "certifi>=2024.8",
+    "fastapi>=0.115",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.10",
+    "pydantic-settings>=2.6",
+    "pyyaml>=6",
+    "sqlalchemy>=2.0",
+    "uvicorn>=0.32",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.27",
+    "pytest>=8",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+"" = "backend"
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+
+[tool.pytest.ini_options]
+pythonpath = ["backend"]
+testpaths = ["backend/tests"]
+addopts = "-q"

@@ -1,0 +1,10 @@
+[Unit]
+Description=ATS daily SQLite backup
+
+[Timer]
+OnCalendar=*-*-* 03:15:00
+Persistent=true
+Unit=ats-backup.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Optional auto-restart for the Telegram observer. Does not start PaperRuntime.
+  1. Fill .env in the repo root (TELEGRAM_BOT_TOKEN, TELEGRAM_ALLOWED_USER_IDS).
+  2. Copy to ~/Library/LaunchAgents/com.ats.telegram.plist
+  3. launchctl load ~/Library/LaunchAgents/com.ats.telegram.plist
+  Keep RunAtLoad false until the paper process on :8000 is already up.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.ats.telegram</string>
+  <key>WorkingDirectory</key>
+  <string>/Users/keyser/botbirja</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/keyser/botbirja/.venv/bin/python</string>
+    <string>-m</string>
+    <string>app.telegram</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PYTHONPATH</key>
+    <string>/Users/keyser/botbirja/backend</string>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/Users/keyser/botbirja/var/telegram.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/keyser/botbirja/var/telegram.log</string>
+  <key>KeepAlive</key>
+  <true/>
+  <key>RunAtLoad</key>
+  <false/>
+</dict>
+</plist>

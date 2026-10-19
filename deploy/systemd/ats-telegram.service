@@ -1,0 +1,28 @@
+[Unit]
+Description=ATS Telegram read-only bot
+After=network-online.target ats-paper.service
+Wants=network-online.target ats-paper.service
+
+[Service]
+Type=simple
+User=ats
+Group=ats
+WorkingDirectory=/opt/botbirja
+Environment=ATS_TELEGRAM_MODE=process
+Environment=ATS_TELEGRAM_API_BASE_URL=http://127.0.0.1:8000
+Environment=ATS_TELEGRAM_CONTROLS_ENABLED=false
+EnvironmentFile=-/opt/botbirja/.env
+ExecStart=/opt/botbirja/.venv/bin/python -m app.telegram --config /opt/botbirja/configs/paper.binance_public.usdt.yaml
+Restart=always
+RestartSec=5
+TimeoutStopSec=20
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ats-telegram
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/botbirja/var
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,38 @@
+# First 24/7 paper run on real Binance quotes (public GET only, no key, no orders).
+# Chosen on 2026-10-11: 1 000 USDT virtual, 0.5% step, BTC/ETH/SOL/XRP, at most 3 pairs
+# active, at most 30% of equity in positions. Not optimised; not a return forecast.
+# Round trip keeps 0.50 - 0.10 - 0.10 - 0.05 = 0.25 percentage points, above net_target_pct.
+
+mode: paper
+exchange: binance_public
+report_currency: USDT
+quote_currency: USDT
+watchlist: [BTC, ETH, SOL, XRP]
+max_active_pairs: 3
+starting_virtual_balance: "1000"
+per_order_quote: "50"
+grid_step_pct: "0.50"
+net_target_pct: "0.10"
+max_portfolio_exposure_pct: "30"
+max_per_asset_exposure_pct: "15"
+max_open_lots_per_asset: 6
+min_order_book_depth_multiplier: "10"
+allow_leverage: false
+allow_margin: false
+allow_live_trading: false
+allow_withdraw: false
+news_poll_interval_sec: 60
+news_stale_after_sec: 600
+pause_new_buys_if_unverified_high_impact: true
+assumed_maker_fee_pct: "0.10"
+assumed_taker_fee_pct: "0.10"
+assumed_slippage_pct: "0.05"
+
+market_stale_after_sec: 15
+max_spread_pct: "0.50"
+depeg_max_deviation_pct: "1.00"
+max_drawdown_pct: "10"
+
+market_poll_interval_sec: 5
+news_fixtures_path: ""
+database_url: "sqlite:///./var/local.db"

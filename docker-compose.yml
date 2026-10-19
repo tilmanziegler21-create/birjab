@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: trading
+      POSTGRES_PASSWORD: trading
+      POSTGRES_DB: trading
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trading -d trading"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: .
+    environment:
+      ATS_MODE: paper
+      ATS_ALLOW_LIVE_TRADING: "false"
+      ATS_ALLOW_LEVERAGE: "false"
+      ATS_ALLOW_MARGIN: "false"
+      ATS_ALLOW_WITHDRAW: "false"
+      ATS_QUOTE_CURRENCY: USDC
+      ATS_REPORT_CURRENCY: USDC
+      ATS_DATABASE_URL: postgresql+psycopg://trading:trading@postgres:5432/trading
+      ATS_CONFIG_PATH: configs/paper.wide.example.yaml
+      # simulated = labelled synthetic walk; binance_public = public GET only, no key.
+      ATS_EXCHANGE: simulated
+      ATS_RUN_LOOP: "true"
+      ATS_RUNTIME: "1"
+      ATS_LLM_API_KEY: ""
+      ATS_EXCHANGE_API_KEY: ""
+      ATS_EXCHANGE_API_SECRET: ""
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

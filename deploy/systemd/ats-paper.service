@@ -1,0 +1,28 @@
+[Unit]
+Description=ATS paper trading engine (no live orders)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ats
+Group=ats
+WorkingDirectory=/opt/botbirja
+Environment=ATS_RUN_LOOP=true
+EnvironmentFile=-/opt/botbirja/.env
+ExecStart=/opt/botbirja/.venv/bin/python -m app.cli serve --config /opt/botbirja/configs/paper.binance_public.usdt.yaml --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+TimeoutStopSec=40
+KillSignal=SIGTERM
+# uvicorn shutdown runs lifespan.finally → runtime.persist()
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ats-paper
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/botbirja/var
+
+[Install]
+WantedBy=multi-user.target

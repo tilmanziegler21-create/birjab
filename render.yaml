@@ -1,0 +1,96 @@
+# Paper-only on Render. API is a private service (no public URL).
+# Telegram is a worker. SQLite lives on persistent disks at /app/var.
+# Restore var/backups/render-handoff.tgz before the first tick (docs/RENDER.md).
+# LiveAdapter stays disabled. Do not set exchange keys.
+
+services:
+  - type: pserv
+    name: ats-paper
+    runtime: docker
+    plan: starter
+    region: frankfurt
+    numInstances: 1
+    maxShutdownDelaySeconds: 60
+    dockerfilePath: ./Dockerfile
+    dockerCommand: paper
+    disk:
+      name: ats-paper-data
+      mountPath: /app/var
+      sizeGB: 1
+    envVars:
+      - key: ATS_ROLE
+        value: paper
+      - key: ATS_REQUIRE_EXISTING_DB
+        value: "true"
+      - key: PORT
+        value: "10000"
+      - key: ATS_MODE
+        value: paper
+      - key: ATS_ALLOW_LIVE_TRADING
+        value: "false"
+      - key: ATS_ALLOW_LEVERAGE
+        value: "false"
+      - key: ATS_ALLOW_MARGIN
+        value: "false"
+      - key: ATS_ALLOW_WITHDRAW
+        value: "false"
+      - key: ATS_EXCHANGE
+        value: binance_public
+      - key: ATS_QUOTE_CURRENCY
+        value: USDT
+      - key: ATS_REPORT_CURRENCY
+        value: USDT
+      - key: ATS_CONFIG_PATH
+        value: configs/paper.binance_public.usdt.yaml
+      - key: ATS_DATABASE_URL
+        value: sqlite:///./var/local.db
+      - key: ATS_RUN_LOOP
+        value: "true"
+      - key: ATS_RUNTIME
+        value: "1"
+      - key: ATS_TELEGRAM_MODE
+        value: process
+      - key: PYTHONUNBUFFERED
+        value: "1"
+
+  - type: worker
+    name: ats-telegram
+    runtime: docker
+    plan: starter
+    region: frankfurt
+    numInstances: 1
+    maxShutdownDelaySeconds: 30
+    dockerfilePath: ./Dockerfile
+    dockerCommand: telegram
+    disk:
+      name: ats-telegram-data
+      mountPath: /app/var
+      sizeGB: 1
+    envVars:
+      - key: ATS_ROLE
+        value: telegram
+      - key: ATS_MODE
+        value: paper
+      - key: ATS_ALLOW_LIVE_TRADING
+        value: "false"
+      - key: ATS_CONFIG_PATH
+        value: configs/paper.binance_public.usdt.yaml
+      - key: ATS_TELEGRAM_MODE
+        value: process
+      - key: ATS_TELEGRAM_CONTROLS_ENABLED
+        value: "false"
+      - key: ATS_TELEGRAM_STATE_PATH
+        value: var/telegram_state.json
+      - key: ATS_TELEGRAM_API_BASE_URL
+        fromService:
+          name: ats-paper
+          type: pserv
+          property: hostport
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_ALLOWED_USER_IDS
+        sync: false
+      - key: TELEGRAM_CHAT_ID
+        sync: false
+      - key: PYTHONUNBUFFERED
+        value: "1"

@@ -1,0 +1,10 @@
+[Unit]
+Description=ATS paper healthcheck (loopback only)
+After=ats-paper.service
+
+[Service]
+Type=oneshot
+User=ats
+Group=ats
+WorkingDirectory=/opt/botbirja
+ExecStart=/opt/botbirja/.venv/bin/python -m app.ops.health --url http://127.0.0.1:8000/health --max-lag 60

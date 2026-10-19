@@ -1,0 +1,31 @@
+# DISABLED. Live order sending is not implemented.
+# Loading this file must keep the process in paper mode.
+# A true live flag is rejected by Settings and still would not create a live client.
+
+mode: paper
+exchange: disabled
+quote_currency: USDC
+report_currency: USDC
+allow_leverage: false
+allow_margin: false
+allow_live_trading: false
+allow_withdraw: false
+watchlist: [BTC, ETH]
+starting_virtual_balance: "0"
+per_order_quote: "0"
+grid_step_pct: "0.30"
+net_target_pct: "0.10"
+max_portfolio_exposure_pct: "40"
+max_per_asset_exposure_pct: "15"
+max_open_lots_per_asset: 6
+min_order_book_depth_multiplier: "10"
+news_poll_interval_sec: 60
+news_stale_after_sec: 600
+pause_new_buys_if_unverified_high_impact: true
+assumed_maker_fee_pct: "0.10"
+assumed_taker_fee_pct: "0.10"
+assumed_slippage_pct: "0.05"
+market_stale_after_sec: 15
+max_spread_pct: "0.50"
+depeg_max_deviation_pct: "1.00"
+max_drawdown_pct: "10"
